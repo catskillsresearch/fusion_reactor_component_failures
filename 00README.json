@@ -1,0 +1,35 @@
+{
+  "process": {
+    "compiler": "pdflatex"
+  },
+  "sources": [
+    {
+      "filename": "arxiv.tex",
+      "usage": "toplevel"
+    },
+    {
+      "filename": "figures/jet-reactor-bounce.png",
+      "usage": "include"
+    },
+    {
+      "filename": "figures/jt60sa-hv-arc.png",
+      "usage": "include"
+    },
+    {
+      "filename": "figures/jt60u-mg-rotor.png",
+      "usage": "include"
+    },
+    {
+      "filename": "figures/tfr-runaway-electron.png",
+      "usage": "include"
+    },
+    {
+      "filename": "figures/tftr-motor-generator.png",
+      "usage": "include"
+    },
+    {
+      "filename": "figures/tore-supra-quench.png",
+      "usage": "include"
+    }
+  ]
+}
