@@ -9,8 +9,10 @@ TEX="arxiv.tex"
 OUT_DIR="dist"
 ZIP="${OUT_DIR}/arxiv_submit.zip"
 
-echo "==> Regenerating TeX and Mermaid figure PNGs"
-./scripts/build_arxiv_tex.sh
+if [[ "${1:-}" != "--zip-only" ]]; then
+  echo "==> Regenerating TeX and Mermaid figure PNGs"
+  ./scripts/build_arxiv_tex.sh
+fi
 
 if [[ ! -f "$TEX" ]]; then
   echo "error: missing $TEX" >&2
