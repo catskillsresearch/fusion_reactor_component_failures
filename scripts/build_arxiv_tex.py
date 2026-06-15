@@ -152,7 +152,7 @@ def cleanup_pandoc_latex(latex: str) -> str:
     latex = re.sub(
         r"\\includegraphics\{figures/([^}]+)\}",
         r"\\begin{center}\n"
-        r"\\includegraphics[width=0.85\\textwidth,keepaspectratio]{figures/\1}\n"
+        r"\\includegraphics[width=0.5\\textwidth,height=0.5\\textheight,keepaspectratio]{figures/\1}\n"
         r"\\end{center}",
         latex,
     )
