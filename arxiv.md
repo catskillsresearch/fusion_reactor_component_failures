@@ -1,5 +1,10 @@
 # Experimental Fusion Reactor "Fender Benders": A Historical Registry of Non-Thermonuclear Energetic Excursions
 
+**Abstract**  
+While magnetic confinement fusion facilities cannot undergo a runaway thermonuclear chain reaction or a Chernobyl-style core meltdown, they operate under extreme thermodynamic, structural, and electromagnetic conditions. An experimental fusion reactor is a complex process facility storing gigajoules of magnetic energy, managing volatile cryogenic fluids, operating at kilovolt-scale electrical potentials, and utilizing high-speed kinetic machinery to pulse its systems. When structural materials, electrical insulation, or control loops fail, these stored energies can release rapidly. This report catalogs the most notable historical "fender benders"—highly energetic, non-nuclear physical, mechanical, and cryogenic failures—in the history of experimental magnetic confinement fusion, from the 1973 TFR runaway-electron vessel burn-through through the 2021 JT-60SA high-voltage arc and cryogenic leak. Each incident is analyzed for technology baseline, chronology, damage, root cause, and remediation lessons relevant to commercial fusion engineering.
+
+---
+
 While magnetic confinement fusion facilities cannot undergo a runaway thermonuclear chain reaction or a Chernobyl-style core meltdown, they operate under extreme thermodynamic, structural, and electromagnetic conditions. An experimental fusion reactor is a complex process facility storing gigajoules of magnetic energy, managing volatile cryogenic fluids, operating at kilovolt-scale electrical potentials, and utilizing high-speed kinetic machinery to pulse its systems. 
 
 When structural materials, electrical insulation, or control loops fail, these stored energies can release rapidly. To assist in evaluating engineering risks for future commercial deployments, this report catalogs the most notable historical "fender benders"—highly energetic, non-nuclear physical, mechanical, and cryogenic failures—in the history of experimental magnetic confinement fusion.
@@ -222,6 +227,20 @@ These real-world events reinforce the reality that a primary challenge of commer
 
 ---
 
+## Acknowledgements
+
+The human authors retain sole responsibility for the historical claims, incident descriptions, citations, and conclusions in this registry. Following standard publisher practice (e.g., COPE guidance on authorship and AI tools [COPE24]), **no large language model is listed as a co-author**—authorship implies accountability that automated systems cannot bear.
+
+We gratefully acknowledge assistance from the following tools:
+
+**Cursor** ([Cur25]): agent-assisted editing in the Cursor IDE, including models routed through Cursor's **Auto** agent mode (which may invoke Composer-family and other backend models depending on task). These agents helped draft and revise incident narratives, convert failure-chain descriptions to Mermaid diagrams, and format mathematical notation. Generated text was treated as provisional until verified against primary sources and reviewed by the human authors.
+
+**Google Gemini 3.5 Flash** ([Gem25]): independent technical briefs on tokamak disruption physics, runaway-electron damage mechanisms, motor-generator pulsed-power systems, and superconducting magnet quench protection. Those briefs informed subsequent human-directed revisions; we did not adopt every recommendation verbatim without cross-checking against the cited literature.
+
+All factual claims, diagram semantics, and final prose were reviewed and owned by the human authors. Intellectual property in this note rests with the authors under the project's stated license.
+
+---
+
 ## References
 
 *   [1] Equipe TFR, "High-current discharges in the TFR device," in *Proceedings of the 5th International Conference on Plasma Physics and Controlled Nuclear Fusion Research*, Tokyo, Japan, 1974, IAEA-CN-33/A6-2.
@@ -240,3 +259,6 @@ These real-world events reinforce the reality that a primary challenge of commer
 *   [14] JT-60SA Project Management, "Integrated Commissioning Status on 09.07.2021: Root Cause and Recovery Measures of the EF1 Feeder Incident," Broader Approach Programme Report, July 2021.
 *   [15] H. Shirai et al., "Overview of Construction and First Commissioning Results of JT-60SA Superconducting Magnets," *Nuclear Fusion*, vol. 64, no. 3, 2024.
 *   [16] K. Tsuchiya et al., "Performance of JT-60SA Superconducting Magnet Operation in Integrated Commissioning Test," *IEEE Transactions on Applied Superconductivity*, vol. 35, no. 5, 2025.
+*   [COPE24] Committee on Publication Ethics (COPE). (2024). Authorship and AI tools: COPE position statement. https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools
+*   [Cur25] Anysphere, Inc. Cursor: AI-native code editor and agent environment. https://cursor.com (accessed 2025).
+*   [Gem25] Google DeepMind. (2025). Gemini model family (including Flash). Technical documentation and model cards. https://ai.google.dev/gemini-api/docs/models
