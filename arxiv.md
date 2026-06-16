@@ -118,11 +118,11 @@ JET engineers subsequently upgraded the vacuum vessel's structural supports, add
 ```mermaid
 graph TD
     A[High-Beta / High-Power Campaign] --> B[Cyclic Fatigue on H-MG Rotor Shaft]
-    C --> D[Heating Motor-Generator H-MG Mechanical Failure]
-    D --> E[Auxiliary NBI / RF Systems Loss of Pulsed Power]
-    E --> F[Direct Grid Bypass Strategy Implemented]
-    F --> G[Commercial Substation Peak Power Limits Reach Saturation]
-    G --> H[TF Field Restricted to < 3 T Operation]
+    B --> C[Heating Motor-Generator H-MG Mechanical Failure]
+    C --> D[Auxiliary NBI / RF Systems Loss of Pulsed Power]
+    D --> E[Direct Grid Bypass Strategy Implemented]
+    E --> F[Commercial Substation Peak Power Limits Reach Saturation]
+    F --> G[TF Field Restricted to < 3 T Operation]
 ```
 
 ### 5.1 Technical and Design Baseline
