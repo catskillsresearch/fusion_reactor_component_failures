@@ -1,0 +1,38 @@
+# Citation File Format — GitHub “Cite this repository” only.
+# Authoritative Zenodo metadata (subjects, resource type, relations): .zenodo.json
+
+cff-version: 1.2.0
+title: "Fusion Reactor Component Failures: A Review of Historical Non-Thermonuclear Energetic Excursions"
+message: "If you use this review, please cite it as below."
+type: report
+authors:
+  - family-names: Ericson
+    given-names: Lars Warren
+    affiliation: Catskills Research Company
+    orcid: "https://orcid.org/0000-0001-8299-9361"
+abstract: >-
+  While magnetic confinement fusion (MCF) devices are inherently safe from
+  runaway thermonuclear chain reactions, they operate under high thermodynamic,
+  structural, electromagnetic, and cryogenic energy densities. This review
+  compiles and analyzes six major historical structural and engineering
+  component failures in experimental magnetic confinement devices: TFR (1973),
+  TFTR (1980), JET (1980s–1990s), JT-60U (2004), Tore Supra/WEST (2017), and
+  JT-60SA (2021).
+keywords:
+  - tokamak
+  - fusion safety
+  - component failure
+repository-code: "https://github.com/catskillsresearch/fusion_reactor_component_failures"
+license: Apache-2.0
+version: 1.0.0
+date-released: 2026-06-15
+# Full keywords, LOC subjects, and Zenodo fields: .zenodo.json
+preferred-citation:
+  type: report
+  title: "Fusion Reactor Component Failures: A Review of Historical Non-Thermonuclear Energetic Excursions"
+  authors:
+    - family-names: Ericson
+      given-names: Lars Warren
+  year: 2026
+  version: 1.0.0
+  notes: "Deposit zenodo.pdf on Zenodo for a DOI; source lives on GitHub."
