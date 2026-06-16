@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Convert arxiv.md to arxiv.tex (avg_case_mls-style pipeline with Mermaid → PNG)."""
+"""Convert arxiv.md to arxiv.tex or zenodo.tex (Mermaid → PNG, pandoc → LaTeX)."""
 
 from __future__ import annotations
 
+import argparse
 import re
 import subprocess
 import sys
@@ -15,8 +16,9 @@ sys.path.insert(0, str(SCRIPTS))
 from render_mermaid_figures import replace_mermaid_blocks  # noqa: E402
 
 SRC = ROOT / "arxiv.md"
-OUT = ROOT / "arxiv.tex"
 PREAMBLE = SCRIPTS / "tex_preamble_arxiv.tex"
+REPO_URL = "https://github.com/catskillsresearch/fusion_reactor_component_failures"
+VERSION = "1.0.0"
 
 GITHUB_INLINE_MATH = re.compile(r"\$`([^`\n]+?)`\$")
 HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
@@ -26,6 +28,17 @@ ABSTRACT_RE = re.compile(
     r"^\*\*Abstract\*\*\s*\n(.*?)(?=\n---\s*\n)",
     re.MULTILINE | re.DOTALL,
 )
+
+TARGETS = {
+    "arxiv": {
+        "tex": ROOT / "arxiv.tex",
+        "label": "arXiv preprint",
+    },
+    "zenodo": {
+        "tex": ROOT / "zenodo.tex",
+        "label": "Zenodo technical report",
+    },
+}
 
 
 def ensure_blank_line_before_lists(text: str) -> str:
@@ -143,6 +156,52 @@ def inject_placeholders(latex: str, placeholders: dict[str, str]) -> str:
     return out
 
 
+EXCURSION_TABLE_COLS = re.compile(
+    r"\\begin\{longtable\}\[\]\{@\{\}\n"
+    r"(?:  >\{\\raggedright\\arraybackslash\}p\{\(\\columnwidth - 10\\tabcolsep\) \* \\real\{0\.1667\}\}\n){5}"
+    r"  >\{\\raggedright\\arraybackslash\}p\{\(\\columnwidth - 10\\tabcolsep\) \* \\real\{0\.1667\}\}@\{\}\}",
+)
+
+
+def fix_excursion_parameters_table(latex: str) -> str:
+    """Give the excursion comparison table narrower leading columns and footnotesize."""
+    col_widths = (0.0800, 0.0950, 0.1400, 0.1150, 0.2850, 0.2850)
+    match = EXCURSION_TABLE_COLS.search(latex)
+    if not match:
+        return latex
+
+    lines = ["@{}"]
+    for i, w in enumerate(col_widths):
+        col = (
+            f"  >{{\\raggedright\\arraybackslash}}p{{(\\columnwidth - 10\\tabcolsep) * \\real{{{w:.4f}}}}}"
+        )
+        if i == len(col_widths) - 1:
+            col += "@{}"
+        lines.append(col)
+    new_spec = "\n".join(lines)
+
+    def _replace_table(_: re.Match[str]) -> str:
+        return f"\\begin{{longtable}}[]{{{new_spec}}}"
+
+    latex = EXCURSION_TABLE_COLS.sub(_replace_table, latex, count=1)
+    latex = latex.replace(
+        "Structural/Operational Consequence\n\\end{minipage}",
+        "Structural/\\\\Operational\\\\Consequence\n\\end{minipage}",
+    )
+    latex = latex.replace(
+        "Mitigation System Performance\n\\end{minipage}",
+        "Mitigation System\\\\Performance\n\\end{minipage}",
+    )
+
+    section_pos = latex.find("Comparative Analysis of Excursion Parameters")
+    if section_pos == -1:
+        return latex
+    lt_start = latex.find("\\begin{longtable}", section_pos)
+    lt_end = latex.find("\\end{longtable}", lt_start) + len("\\end{longtable}")
+    table = latex[lt_start:lt_end]
+    return latex[:lt_start] + "{\\footnotesize\n" + table + "\n}" + latex[lt_end:]
+
+
 def cleanup_pandoc_latex(latex: str) -> str:
     latex = latex.replace("\\pandocbounded{", "{")
     latex = re.sub(r"\\tightlist\n", "", latex)
@@ -156,11 +215,12 @@ def cleanup_pandoc_latex(latex: str) -> str:
         r"\\end{center}",
         latex,
     )
+    latex = fix_excursion_parameters_table(latex)
     latex = re.sub(r"\n{3,}", "\n\n", latex)
     return latex
 
 
-def build_title_page(title: str, abstract: str) -> str:
+def build_title_page_arxiv(title: str, abstract: str) -> str:
     abstract_tex = escape_latex(abstract)
     return textwrap.dedent(
         f"""
@@ -181,7 +241,7 @@ def build_title_page(title: str, abstract: str) -> str:
           \\textbf{{ORCID:}} 0000-0001-8299-9361 \\\\
           \\textbf{{Primary Category:}} physics.plasm-ph (Plasma Physics) \\\\
           \\textbf{{Secondary Category:}} physics.ins-det (Instrumentation and Detectors) \\\\[0.5em]
-          \\textbf{{Repository:}} \\url{{https://github.com/catskillsresearch/fusion_reactor_component_failures}}
+          \\textbf{{Repository:}} \\url{{{REPO_URL}}}
         \\end{{center}}
 
         \\begin{{abstract}}
@@ -191,21 +251,55 @@ def build_title_page(title: str, abstract: str) -> str:
     ).strip()
 
 
-def main() -> int:
+def build_title_page_zenodo(title: str, abstract: str) -> str:
+    abstract_tex = escape_latex(abstract)
+    return textwrap.dedent(
+        f"""
+        \\title{{\\textbf{{{escape_latex(title)}}}}}
+
+        \\author[1]{{\\textbf{{Lars Warren Ericson}}}}
+        \\affil[1]{{Catskills Research Company}}
+        \\affil[1]{{\\texttt{{lars.ericson@catskillsresearch.com}}}}
+
+        \\date{{\\today}}
+
+        \\begin{{document}}
+
+        \\maketitle
+
+        \\begin{{center}}
+          \\small
+          \\textbf{{ORCID:}} 0000-0001-8299-9361 \\\\
+          \\textbf{{Resource type:}} Technical report \\\\
+          \\textbf{{Version:}} {VERSION} \\\\[0.5em]
+          \\textbf{{Source repository:}} \\url{{{REPO_URL}}}
+        \\end{{center}}
+
+        \\begin{{abstract}}
+        {abstract_tex}
+        \\end{{abstract}}
+        """
+    ).strip()
+
+
+def build_document(target: str, render_mermaid: bool = True) -> Path:
+    if target not in TARGETS:
+        raise ValueError(f"unknown target {target!r}")
+    out_path = TARGETS[target]["tex"]
+
     if not SRC.is_file():
-        print(f"error: missing {SRC}", file=sys.stderr)
-        return 1
+        raise FileNotFoundError(SRC)
     if not PREAMBLE.is_file():
-        print(f"error: missing {PREAMBLE}", file=sys.stderr)
-        return 1
+        raise FileNotFoundError(PREAMBLE)
 
     raw = SRC.read_text(encoding="utf-8")
     title, abstract, body = extract_title_and_abstract(raw)
-    body, mermaid_paths = replace_mermaid_blocks(body)
-    if mermaid_paths:
-        print("rendered mermaid figures:")
-        for path in mermaid_paths:
-            print(f"  {path}")
+    if render_mermaid:
+        body, mermaid_paths = replace_mermaid_blocks(body)
+        if mermaid_paths:
+            print("rendered mermaid figures:")
+            for path in mermaid_paths:
+                print(f"  {path}")
 
     body = strip_html_comments(body)
     body = strip_manual_section_numbers(body)
@@ -217,7 +311,11 @@ def main() -> int:
     latex_body = cleanup_pandoc_latex(latex_body)
 
     preamble = PREAMBLE.read_text(encoding="utf-8")
-    title_page = build_title_page(title, abstract)
+    if target == "arxiv":
+        title_page = build_title_page_arxiv(title, abstract)
+    else:
+        title_page = build_title_page_zenodo(title, abstract)
+
     document = (
         preamble
         + "\n\n"
@@ -226,8 +324,27 @@ def main() -> int:
         + latex_body
         + "\n\n\\end{document}\n"
     )
-    OUT.write_text(document, encoding="utf-8")
-    print(f"wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size:,} bytes)")
+    out_path.write_text(document, encoding="utf-8")
+    return out_path
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--target",
+        choices=sorted(TARGETS),
+        default="arxiv",
+        help="output document variant (default: arxiv)",
+    )
+    parser.add_argument(
+        "--skip-mermaid",
+        action="store_true",
+        help="reuse existing figures/*.png (second target in one run)",
+    )
+    args = parser.parse_args()
+
+    out_path = build_document(args.target, render_mermaid=not args.skip_mermaid)
+    print(f"wrote {out_path.relative_to(ROOT)} ({out_path.stat().st_size:,} bytes)")
     return 0
 
 

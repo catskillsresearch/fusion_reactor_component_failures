@@ -1,0 +1,65 @@
+{
+  "title": "Fusion Reactor Component Failures: A Review of Historical Non-Thermonuclear Energetic Excursions",
+  "upload_type": "publication",
+  "publication_type": "report",
+  "access_right": "open",
+  "language": "eng",
+  "version": "1.0.0",
+  "description": "Historical review of six major non-thermonuclear energetic excursions in experimental magnetic confinement fusion devices (TFR, TFTR, JET, JT-60U, Tore Supra/WEST, JT-60SA). Covers relativistic runaway-electron damage, pulsed-power machinery failures, vertical displacement events and halo currents, and high-voltage/cryogenic faults in superconducting magnet systems. Readable PDF: zenodo.pdf. Source manuscript and build scripts: https://github.com/catskillsresearch/fusion_reactor_component_failures",
+  "creators": [
+    {
+      "name": "Ericson, Lars Warren",
+      "affiliation": "Catskills Research Company",
+      "orcid": "0000-0001-8299-9361"
+    }
+  ],
+  "keywords": [
+    "tokamak",
+    "fusion safety",
+    "component failure",
+    "runaway electrons",
+    "plasma disruption",
+    "halo currents",
+    "superconducting magnets",
+    "cryogenics",
+    "fusion engineering",
+    "technical report"
+  ],
+  "subjects": [
+    {
+      "term": "Nuclear fusion",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh85092995",
+      "scheme": "url"
+    },
+    {
+      "term": "Tokamaks",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh85135836",
+      "scheme": "url"
+    },
+    {
+      "term": "Fusion reactors",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh85052597",
+      "scheme": "url"
+    },
+    {
+      "term": "Plasma (Ionized gases)",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh85103050",
+      "scheme": "url"
+    },
+    {
+      "term": "Nuclear engineering",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh85092991",
+      "scheme": "url"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "notes": "Primary readable artifact is zenodo.pdf. Markdown source is arxiv.md in the linked GitHub repository.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/catskillsresearch/fusion_reactor_component_failures",
+      "relation": "isSupplementedBy",
+      "scheme": "url",
+      "resource_type": "software"
+    }
+  ]
+}
