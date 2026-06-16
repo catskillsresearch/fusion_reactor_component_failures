@@ -74,7 +74,7 @@ def render_one(mmd_body: str, out_png: Path) -> None:
         tmp_path.unlink(missing_ok=True)
 
 
-def replace_mermaid_blocks(text: str) -> tuple[str, list[str]]:
+def replace_mermaid_blocks(text: str, *, render: bool = True) -> tuple[str, list[str]]:
     names = list(DEFAULT_NAMES)
     rendered: list[str] = []
     idx = 0
@@ -88,7 +88,13 @@ def replace_mermaid_blocks(text: str) -> tuple[str, list[str]]:
             stem = f"mermaid-{idx + 1:03d}"
         idx += 1
         rel = f"figures/{stem}.png"
-        render_one(body, ROOT / rel)
+        out_png = ROOT / rel
+        if render:
+            render_one(body, out_png)
+        elif not out_png.is_file():
+            raise FileNotFoundError(
+                f"missing prerendered figure {rel}; run build without --skip-mermaid first"
+            )
         rendered.append(rel)
         caption = stem.replace("-", " ").title()
         return f"\n\n![{caption}]({rel})\n\n"

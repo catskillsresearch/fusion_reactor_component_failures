@@ -23,7 +23,7 @@ VERSION = "1.0.0"
 GITHUB_INLINE_MATH = re.compile(r"\$`([^`\n]+?)`\$")
 HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 FENCE_RE = re.compile(r"^```([^\n]*)\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL)
-MANUAL_SECTION_NUM = re.compile(r"^(#{1,4})\s+\d+\.\s+", re.MULTILINE)
+MANUAL_SECTION_NUM = re.compile(r"^(#{1,4})\s+\d+(?:\.\d+)*\.?\s+", re.MULTILINE)
 ABSTRACT_RE = re.compile(
     r"^\*\*Abstract\*\*\s*\n(.*?)(?=\n---\s*\n)",
     re.MULTILINE | re.DOTALL,
@@ -205,9 +205,9 @@ def fix_excursion_parameters_table(latex: str) -> str:
 def cleanup_pandoc_latex(latex: str) -> str:
     latex = latex.replace("\\pandocbounded{", "{")
     latex = re.sub(r"\\tightlist\n", "", latex)
-    latex = re.sub(r"\\section\{\d+\.\s+", r"\\section{", latex)
-    latex = re.sub(r"\\subsection\{\d+\.\s+", r"\\subsection{", latex)
-    latex = re.sub(r"\\subsubsection\{\d+\.\s+", r"\\subsubsection{", latex)
+    latex = re.sub(r"\\section\{\d+(?:\.\d+)*\.?\s+", r"\\section{", latex)
+    latex = re.sub(r"\\subsection\{\d+(?:\.\d+)*\.?\s+", r"\\subsection{", latex)
+    latex = re.sub(r"\\subsubsection\{\d+(?:\.\d+)*\.?\s+", r"\\subsubsection{", latex)
     latex = re.sub(
         r"\\includegraphics\{figures/([^}]+)\}",
         r"\\begin{center}\n"
@@ -295,9 +295,15 @@ def build_document(target: str, render_mermaid: bool = True) -> Path:
     raw = SRC.read_text(encoding="utf-8")
     title, abstract, body = extract_title_and_abstract(raw)
     if render_mermaid:
-        body, mermaid_paths = replace_mermaid_blocks(body)
+        body, mermaid_paths = replace_mermaid_blocks(body, render=True)
         if mermaid_paths:
             print("rendered mermaid figures:")
+            for path in mermaid_paths:
+                print(f"  {path}")
+    else:
+        body, mermaid_paths = replace_mermaid_blocks(body, render=False)
+        if mermaid_paths:
+            print("linked prerendered mermaid figures:")
             for path in mermaid_paths:
                 print(f"  {path}")
 
